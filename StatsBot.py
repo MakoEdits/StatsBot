@@ -28,7 +28,6 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             return
         #Split input into list of words
         splitted = e.arguments[0].split(" ")
-
         #Assigns currently set functions to keywords
         #Allowing them to be called by passing user input
         functionList = {botPrefix + statsString: (lambda: self.stats(c, splitted)),
@@ -101,10 +100,13 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         sResults, lResults, outMessage = results[0], results[1], results[2]
         operators = json.loads(lResults["operators"])
         #Format results
-        player_name     = str(sResults["p_name"])
-        player_operator = str(operatorList[str(opArg)])
-        player_opKD     = str(round(operators[2][opArg]/operators[3][opArg], 2))
-        player_opWL     = str(round(operators[0][opArg]/(operators[0][opArg] + operators[1][opArg]), 2)) + "%"
+        try:
+            player_name     = str(sResults["p_name"])
+            player_operator = str(operatorList[str(opArg)])
+            player_opKD     = str(round(operators[2][opArg]/operators[3][opArg], 2))
+            player_opWL     = str(round(operators[0][opArg]/(operators[0][opArg] + operators[1][opArg]), 2)) + "%"
+        except ZeroDivisionError:
+            return
         #Format response
         outMessage += str(player_name +
             " | " + player_operator +
@@ -125,11 +127,14 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         dTop = lResults["favdefender"]
         operators = json.loads(lResults["operators"])
         #Format results
-        player_name = str(sResults["p_name"])
-        player_a    = str(operatorList[str(aTop)])
-        player_aKD  = str(round(operators[2][aTop]/operators[3][aTop], 2))
-        player_d    = str(operatorList[str(dTop)])
-        player_dKD  = str(round(operators[2][dTop]/operators[3][dTop], 2))
+        try:
+            player_name = str(sResults["p_name"])
+            player_a    = str(operatorList[str(aTop)])
+            player_aKD  = str(round(operators[2][aTop]/operators[3][aTop], 2))
+            player_d    = str(operatorList[str(dTop)])
+            player_dKD  = str(round(operators[2][dTop]/operators[3][dTop], 2))
+        except ZeroDivisionError:
+            return
         #Format response
         outMessage += str(player_name +
             " | Attack main: " + player_a +
@@ -151,12 +156,15 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         win = lResults["data"][3]
         loss = lResults["data"][4]
         #Format results
-        player_name        = str(sResults["p_name"])
-        player_kd          = str(int(sResults["kd"])/100)
-        player_wl          = str(round(win/(win+loss)*100, 2)) + "%"
-        player_currentmmr  = str(sResults["p_currentmmr"])
-        player_currentrank = str(rankList[sResults["p_currentrank"]])
-        player_level       = str(sResults["p_level"])
+        try:
+            player_name        = str(sResults["p_name"])
+            player_kd          = str(int(sResults["kd"])/100)
+            player_wl          = str(round(win/(win+loss)*100, 2)) + "%"
+            player_currentmmr  = str(sResults["p_currentmmr"])
+            player_currentrank = str(rankList[sResults["p_currentrank"]])
+            player_level       = str(sResults["p_level"])
+        except ZeroDivisionError:
+            return
         #Format response
         outMessage += str(player_name + 
             " | K/D: "   + player_kd + 
