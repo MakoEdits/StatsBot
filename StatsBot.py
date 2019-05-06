@@ -33,10 +33,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         functionList = {botPrefix + statsString: (lambda: self.stats(c, splitted)),
                         botPrefix + opString:    (lambda: self.op(c, splitted)),
                         botPrefix + mainsString: (lambda: self.mains(c, splitted))}
-        try:
+        if splitted[0].lower() in [*functionList]:
             functionList[splitted[0].lower()]()
-        except KeyError:
-            return
 
 
     def search(self, c, splitted):
