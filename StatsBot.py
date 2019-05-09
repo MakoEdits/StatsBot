@@ -189,14 +189,16 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             return
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Retrieve MMR and Rank
+        rank_mmr = lResults["season" + season]
+        #Format results
         player_name   = str(sResults["p_name"])
-        player_s_mmr  = str(lResults["season" + season + "mmr"])
-        player_s_rank = str(rankList[lResults["season" + season + "rank"]])
+        player_s_rank  = str(rankList[rank_mmr[0]])
+        player_s_mmr = str(rank_mmr[1])
         #Format response
         outMessage += str(player_name +
             " | Season " + season +
-            " | MMR: " + player_s_mmr +
-            " | Rank: " + player_s_rank)
+            " | Rank: " + player_s_rank +
+            " | MMR: " + player_s_mmr)
         #Send message to target channel
         c.privmsg(self.channel, outMessage)
 
