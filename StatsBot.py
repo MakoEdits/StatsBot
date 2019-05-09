@@ -86,6 +86,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
                 return key
         return None
 
+
     #Retusn K/D and W/L of specified operator
     def op(self, c, splitted):
         opArg = self.opSearch(splitted[1])
@@ -116,6 +117,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             " | W/L: " + player_opWL)
         #Send message to target channel
         c.privmsg(self.channel, outMessage)
+
 
     #Returns operators by highest playtime and their K/D
     def mains(self, c, splitted):
@@ -191,11 +193,11 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             return
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Retrieve MMR and Rank
-        rank_mmr = lResults["season" + season]
+        rank_mmr = lResults["season" + season].split(":")
         #Format results
         player_name   = str(sResults["p_name"])
         player_s_mmr = str(rank_mmr[1])
-        player_s_rank  = str(rankList[rank_mmr[0]])
+        player_s_rank  = str(rankList[int(rank_mmr[0])])
         #Format response
         outMessage += str(player_name +
             " | Season " + season +
