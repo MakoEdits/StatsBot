@@ -30,9 +30,11 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         splitted = e.arguments[0].split(" ")
         #Assigns currently set functions to keywords
         #Allowing them to be called by passing user input
-        functionList = {botPrefix + statsString: (lambda: self.stats(c, splitted)),
-                        botPrefix + opString:    (lambda: self.op(c, splitted)),
-                        botPrefix + mainsString: (lambda: self.mains(c, splitted))}
+        functionList = {botPrefix + statsString:  (lambda: self.stats(c, splitted)),
+                        botPrefix + opString:     (lambda: self.op(c, splitted)),
+                        botPrefix + mainsString:  (lambda: self.mains(c, splitted)),
+                        botPrefix + seasonString: (lambda: self.season(c, splitted))}
+
         if splitted[0].lower() in [*functionList]:
             functionList[splitted[0].lower()]()
 
@@ -143,7 +145,6 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     #Returns players seasonal rank and overalls stats
     def stats(self, c, splitted):
-        print("got stats")
         #Get request
         results = self.search(c, splitted)
         if results == None:
@@ -172,6 +173,33 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Send message to target channel
         c.privmsg(self.channel, outMessage)
 
+    def season(self, c, splitted):
+        season = splitted[1]
+        if int(season) in range(1, 13):
+            if int(season) <= 6:
+                outMessage += "Records before season 6 do no exist"
+                c.privmsg(self.channel, outMessage)
+                return
+        else:
+            return
+        #Remove the operator from the argument to work with search function
+        del splitted[1]
+        results = self.search(c, splitted)
+        if results == None:
+            return
+        sResults, lResults, outMessage = results[0], results[1], results[2]
+        #Retrieve MMR and Rank
+        player_name   = str(sResults["p_name"])
+        player_s_mmr  = str(lResults["season" + season + "mmr"])
+        player_s_rank = str(rankList[lResults["season" + season + "rank"]])
+        #Format response
+        outMessage += str(player_name +
+            " | Season " + season +
+            " | MMR: " + player_s_mmr +
+            " | Rank: " + player_s_rank)
+        #Send message to target channel
+        c.privmsg(self.channel, outMessage)
+
 
 #Prefix for the bot, don't use something stupid like only numbers
 botPrefix = "!"
@@ -179,6 +207,7 @@ botPrefix = "!"
 statsString = "stats"
 mainsString = "mains"
 opString = "op"
+seasonString = "season"
 #If bot uses /me or not
 textColoured = False
 
