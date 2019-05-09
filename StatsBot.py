@@ -173,6 +173,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Send message to target channel
         c.privmsg(self.channel, outMessage)
 
+
+    #Returns players rank and mmr for specified season
     def season(self, c, splitted):
         season = splitted[1]
         if int(season) in range(1, 13):
