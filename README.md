@@ -7,25 +7,27 @@ If you would like me to host the bot under my own bot contact me @ Twitter.com/M
 
 ## Requires
 
-Python 3.6 not 3.7 or 2.x
-
-https://www.python.org/downloads/release/python-367/
+Python 3.6 not 3.7 or 2.x  https://www.python.org/downloads/release/python-367/
 
 Python packages: IRC and Requests
 
 <i> In CMD type "py -m pip install irc" or "python -m pip install irc" same for requests </i>
 
+<hr>
+
 In the file:
 
-Fill targetChannel with your channel name
+**Fill targetChannel with your channel name**
 
-Fill clientID with the client ID you retrieve by registering a new application at https://dev.twitch.tv/console
+**Fill clientID with the client ID you retrieve by registering a new application at https://dev.twitch.tv/console**
 
 <i>(copy settings shown if you are unfamiliar)</i>
 
-Fill auth with auth string you get from https://twitchapps.com/tmi/ (include "oauth:" in string)
+**Fill auth with auth string you get from https://twitchapps.com/tmi/ (include "oauth:" in string)**
 
 ![ClientID](https://i.imgur.com/k368tq7.png)
+
+<hr>
 
 Launch the bot either through IDLE, Python's IDE by opening the StatsBot.py and pressing F5
 
@@ -42,9 +44,13 @@ Current commands:
 
 !op [target operator] [platform] [target player]
 
+!season [season number] [platform] [target player] (only works for season 6 and more)
+
 ![Example](https://i.imgur.com/H7MtBcB.png)
 
 Friendly to alternate platform names such as pc, ps4, xbox
+
+Now defaults to pc if no platform given
 
 Command string and prefix is customisable by editing the relevant strings
 
