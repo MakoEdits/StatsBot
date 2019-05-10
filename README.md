@@ -44,7 +44,7 @@ Current commands:
 
 !op [target operator] [platform] [target player]
 
-!season [season number] [platform] [target player] (only works for season 6 and more)
+!season [season number or season name] [platform] [target player] (only works for season 6 and more)
 
 ![Example](https://i.imgur.com/H7MtBcB.png)
 
