@@ -22,8 +22,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         c.join(self.channel)
 
 
+    #Sanitize inputs, allows bot prefix
     def on_pubmsg(self, c, e):
-        #Sanitize inputs, allows bot prefix
         if re.sub("[a-zA-Z0-9-_. ]", "", e.arguments[0][len(botPrefix):]) != "":
             return
         #Split input into list of words
@@ -39,6 +39,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             functionList[splitted[0].lower()]()
 
 
+    #Test input values and return short results, long results and message format
     def search(self, c, splitted):
         try:
             platform = splitted[1].lower()
@@ -79,8 +80,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             return None
 
 
+    #Search through list of operators then return relevant key
     def opSearch(self, opArg):
-        #Search through list of operators then return relevant key
         for key, op in operatorList.items():
             if op.lower() == opArg.lower():
                 return key
@@ -175,9 +176,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Send message to target channel
         c.privmsg(self.channel, outMessage)
 
-
+    #Test if the user passed a number or season name then return season number
     def seasonSearch(self, season, seasonPlus):
-        #Test if the user passed a number or season name then return season number
         try:
             season = int(season)
             if season in range(6, len(seasonList)):
