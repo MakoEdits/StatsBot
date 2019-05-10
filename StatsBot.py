@@ -176,31 +176,49 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         c.privmsg(self.channel, outMessage)
 
 
+    def seasonSearch(self, season, seasonPlus):
+        #Test if the user passed a number or season name then return season number
+        try:
+            season = int(season)
+            if season in range(6, len(seasonList)):
+                return season, False
+            else:
+                return None, None
+        except ValueError:
+            if season in seasonList:
+                return seasonList.index(str(season)), False
+            elif (season + " " + seasonPlus) in seasonList:
+                return seasonList.index(str(season + " " + seasonPlus)), True
+            else:
+                return None, None
+
+
     #Returns players rank and mmr for specified season
     def season(self, c, splitted):
-        season = splitted[1]
-        if int(season) in range(1, 13):
-            if int(season) <= 6:
-                outMessage += "Records before season 6 do no exist"
-                c.privmsg(self.channel, outMessage)
-                return
-        else:
+        season, delTwo = self.seasonSearch(splitted[1], splitted[2])
+        if season == None:
             return
-        #Remove the operator from the argument to work with search function
+        #Remove the season from the argument to work with search function
+        if delTwo:
+            del splitted[2]
         del splitted[1]
         results = self.search(c, splitted)
         if results == None:
             return
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Retrieve MMR and Rank
-        rank_mmr = lResults["season" + season].split(":")
+        if season == len(seasonList)-1:
+            rank_mmr = [sResults["p_currentrank"], sResults["p_currentmmr"]]
+        else:
+            rank_mmr = lResults["season" + str(season)].split(":")
         #Format results
         player_name    = str(sResults["p_name"])
+        seasonName     = str(seasonList[season].title())
         player_s_mmr   = str(rank_mmr[1])
         player_s_rank  = str(rankList[int(rank_mmr[0])])
         #Format response
         outMessage += str(player_name +
-            " | Season " + season +
+            " | " + seasonName + " (" + str(season) + ") " +
             " | MMR: "   + player_s_mmr +
             " | Rank: "  + player_s_rank)
         #Send message to target channel
@@ -249,6 +267,13 @@ operatorList = {"2:1": "Smoke",     "2:2": "Castle",   "2:3": "Doc",        "2:4
                 "5:2": "Thermite",  "5:3": "Montagne", "5:4": "Tachanka",   "5:5": "Bandit",
                 "2:11": "Nomad",    "3:11": "Kaid",    "3:10": "Clash",     "2:10": "Maverick",
                 "2:12": "Gridlock", "3:12": "Mozzie"}
+
+#Dictionary storing operation names
+seasonList = ['launch',
+            'black ice', 'dust line', 'skull rain', 'red crow', #Year One
+            'velvet shell', 'health', 'blood orchid', 'white noise', #Year Two
+            'chimera', 'para bellum', 'grim sky', 'wind bastion', #Year Three
+            'burnt horizon'] #Year Four
 
 bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
 bot.start()
