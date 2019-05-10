@@ -185,9 +185,9 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             else:
                 return None, None
         except ValueError:
-            if season in seasonList:
+            if season.lower() in seasonList:
                 return seasonList.index(str(season)), False
-            elif (season + " " + seasonPlus) in seasonList:
+            elif (season.lower() + " " + seasonPlus.lower()) in seasonList:
                 return seasonList.index(str(season + " " + seasonPlus)), True
             else:
                 return None, None
