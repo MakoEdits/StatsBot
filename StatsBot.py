@@ -30,7 +30,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         splitted = e.arguments[0].split(" ")
         #Assigns currently set functions to keywords
         #Allowing them to be called by passing user input
-        functionList = {botPrefix + statsString:  (lambda: self.stats(c, splitted)),
+        functionList = {botPrefix + "statsbot":   (lambda: self.help(c, splitted)),
+                        botPrefix + statsString:  (lambda: self.stats(c, splitted)),
                         botPrefix + opString:     (lambda: self.op(c, splitted)),
                         botPrefix + mainsString:  (lambda: self.mains(c, splitted)),
                         botPrefix + seasonString: (lambda: self.season(c, splitted))}
@@ -38,6 +39,21 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         if splitted[0].lower() in [*functionList]:
             functionList[splitted[0].lower()]()
 
+
+    def help(self, c, splitted):
+        #/me command
+        if textColoured:
+            outMessage = "/me "
+        else:
+            outMessage = ""
+        outMessage += ("Current StatsBot commands are: " +
+        "!stats [p] [t] # " +
+        "!op [o] [p] [t] # " +
+        "!mains [p] [t] # " +
+        "!season [s] [p] [t] # " +
+        "p: platform, t: target player, o: operator, s: season")
+
+        c.privmsg(self.channel, outMessage)
 
     #Test input values and return short results, long results and message format
     def search(self, c, splitted):
