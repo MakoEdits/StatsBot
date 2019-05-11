@@ -46,7 +46,9 @@ Current commands:
 
 !season [season number or season name] [platform] [target player] (only works for season 6 and more)
 
-![Example](https://i.imgur.com/H7MtBcB.png)
+!statsbot
+
+![Example](https://i.imgur.com/cIHZay1.png)
 
 Friendly to alternate platform names such as pc, ps4, xbox
 
