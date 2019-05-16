@@ -1,4 +1,4 @@
-import os, irc.bot, requests, json, re
+import os, irc.bot, requests, json, re, sys
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
     def __init__(self, username, client_id, auth, channel):
@@ -250,12 +250,16 @@ mainsString = "mains"
 opString = "op"
 seasonString = "season"
 #If bot uses /me or not
-textColoured = False
+if sys.argv[2] == "True":
+    textColoured = True
+else:
+    textColoured = False
 
 #Fill values
-targetChannel = ""
+targetChannel = sys.argv[1]
 clientID = ""
 auth = ""
+
 
 #Returns rank name based on R6Tab number based format
 rankList = ["Unranked", #0
@@ -292,5 +296,12 @@ seasonList = ["launch",
             "chimera", "para bellum", "grim sky", "wind bastion", #Year Three
             "burnt horizon"] #Year Four
 
-bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
-bot.start()
+
+try:
+    bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
+    bot.start()
+except Exception as e:
+    print(str(e) + str(targetChannel))
+    file = open("errorLogs.txt", "a")
+    file.write(str(e) + str(targetChannel) + "\n")
+    file.close()
