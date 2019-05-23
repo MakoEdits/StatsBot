@@ -69,6 +69,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Allow users to use more common names for platforms
         if platform not in ["uplay", "pc", "psn", "ps4", "xbl", "xbox"]:
             return None
+        with open("Lists/platformList.json") as file:
+            platformList = json.loads(file)
         platform = platformList[platform]
         #Allow xbox usernames with spaces
         if platform == "xbl" and len(splitted) > 3:
@@ -99,6 +101,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     #Return K/D and W/L of specified operator
     def op(self, c, splitted):
+        with open("Lists/operatorList.json") as file:
+            operatorList = json.loads(file)
         opArg = self.opSearch(splitted[1])
         #If given operator doesn"t exist, return
         if opArg == None:
@@ -140,6 +144,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(c, splitted)
         if results == None:
             return
+        with open("Lists/operatorList.json") as file:
+            operatorList = json.loads(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Retrieve top attacker and defender
@@ -166,6 +172,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(c, splitted)
         if results == None:
             return
+        with open("Lists/rankList.json") as file:
+            rankList = json.loads(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Win/Loss retrieval
@@ -188,7 +196,9 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     #Returns players rank and mmr for specified season
     def season(self, c, splitted):
-        season, delTwo = self.seasonSearch(splitted[1], splitted[2])
+        with open("Lists/seasonList.json") as file:
+            seasonList = json.loads(file)
+        season, delTwo = self.seasonSearch(splitted[1], splitted[2], seasonList)
         if season == None:
             return
         #Remove the season from the argument to work with search function
@@ -198,6 +208,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(c, splitted)
         if results == None:
             return
+        with open("Lists/rankList.json") as file:
+            rankList = json.loads(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Retrieve MMR and Rank
@@ -218,7 +230,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
 
     #Test if the user passed a number or season name then return season number
-    def seasonSearch(self, season, seasonPlus):
+    def seasonSearch(self, season, seasonPlus, seasonList):
         try:
             season = int(season)
             if season in range(6, len(seasonList)):
@@ -249,41 +261,6 @@ textColoured = False
 targetChannel = ""
 clientID = ""
 auth = ""
-
-#Returns rank name based on R6Tab number based format
-rankList = ["Unranked", #0
-            "Copper IV", "Copper III", "Copper II", "Copper I", #1-4
-            "Bronze IV", "Bronze III", "Bronze II", "Bronze I", #5-8
-            "Silver IV", "Silver III", "Silver II", "Silver I", #9-12
-            "Gold IV", "Gold III", "Gold II", "Gold I", #13-16
-            "Platinum III", "Platinum II", "Platinum I", #17-19
-            "Diamond"] #20
-
-#Returns corrected platform name
-platformList = {"uplay": "uplay", "pc": "uplay", 
-                "psn": "psn", "ps4": "psn", 
-                "xbl": "xbl", "xbox": "xbl"}
-
-#Dictionary based on R6Tab api formatting
-operatorList = {"2:1": "Smoke",     "2:2": "Castle",   "2:3": "Doc",        "2:4": "Glaz", 
-                "2:5": "Blitz",     "2:6": "Buck",     "2:7": "Blackbeard", "2:8": "Capitao", 
-                "2:9": "Hibana",    "2:A": "Jackal",   "2:B": "Ying",       "2:C": "Ela", 
-                "2:D": "Dokkaebi",  "2:F": "Maestro",  "3:1": "Mute",       "3:2": "Ash",
-                "3:3": "Rook",      "3:4": "Fuze",     "3:5": "IQ",         "3:6": "Frost", 
-                "3:7": "Valkyrie",  "3:8": "Caveira",  "3:9": "Echo",       "3:A": "Mira",
-                "3:B": "Lesion",    "3:C": "Zofia",    "3:D": "Vigil",      "3:E": "Lion",
-                "3:F": "Alibi",     "4:1": "Sledge",   "4:2": "Pulse",      "4:3": "Twitch",
-                "4:4": "Kapkan",    "4:5": "Jager",    "4:E": "Finka",      "5:1": "Thatcher",
-                "5:2": "Thermite",  "5:3": "Montagne", "5:4": "Tachanka",   "5:5": "Bandit",
-                "2:11": "Nomad",    "3:11": "Kaid",    "3:10": "Clash",     "2:10": "Maverick",
-                "2:12": "Gridlock", "3:12": "Mozzie"}
-
-#Dictionary storing operation names
-seasonList = ["launch",
-            "black ice", "dust line", "skull rain", "red crow", #Year One
-            "velvet shell", "health", "blood orchid", "white noise", #Year Two
-            "chimera", "para bellum", "grim sky", "wind bastion", #Year Three
-            "burnt horizon"] #Year Four
 
 bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
 bot.start()
