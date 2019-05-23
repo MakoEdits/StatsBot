@@ -44,12 +44,12 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
     def help(self, c, splitted):
         #/me command
         outMessage = "/me" if textColoured else ""
-        outMessage += '''Current StatsBot commands are: 
-        !stats [p] [t] # 
-        !op [o] [p] [t] # 
-        !mains [p] [t] # 
-        !season [s] [p] [t] # 
-        p: platform, t: target player, o: operator, s: season'''
+        outMessage += ("Current StatsBot commands are: " + 
+        "!stats [p] [t] # " +
+        "!op [o] [p] [t] # " +
+        "!mains [p] [t] # " + 
+        "!season [s] [p] [t] # " +
+        "p: platform, t: target player, o: operator, s: season")
         c.privmsg(self.channel, outMessage)
 
 
@@ -82,8 +82,9 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         outMessage = "/me" if textColoured else ""
         #If player doesnt exist return else return info
         if searchR["totalresults"] > 0:
+            player_id = searchR["results"][0]["p_id"]
             #ID data request for aditional information on player
-            idUrl = f"https://r6tab.com/api/player.php?p_id={searchR["results"][0]["p_id"]}"
+            idUrl = f"https://r6tab.com/api/player.php?p_id={player_id}"
             idR = requests.get(idUrl).json()
             #Formatting response
             results = searchR["results"][0]
@@ -179,12 +180,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         player_currentrank = rankList[sResults["p_currentrank"]]
         player_level       = sResults["p_level"]
         #Format response
-        outMessage += f'''{player_name}
-         | K/D: {player_kd}
-         | W/L: {player_wl}
-         | MMR: {player_currentmmr}
-         | Rank: {player_currentrank}
-         | Level: {player_level}'''
+        outMessage += f"{player_name} | K/D: {player_kd} | W/L: {player_wl} | MMR: {player_currentmmr} | Rank: {player_currentrank} | Level: {player_level}"
         #Send message to target channel
         c.privmsg(self.channel, outMessage)
 
@@ -216,10 +212,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         player_s_mmr   = rank_mmr[1]
         player_s_rank  = rankList[int(rank_mmr[0])]
         #Format response
-        outMessage += f'''{player_name}
-         | {seasonName} ( {season} )
-         | MMR: {player_s_mmr}
-         | Rank: {player_s_rank}'''
+        outMessage += f"{player_name} | {seasonName} ( {season} ) | MMR: {player_s_mmr} | Rank: {player_s_rank}"
         #Send message to target channel
         c.privmsg(self.channel, outMessage)
 
