@@ -69,7 +69,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Allow users to use more common names for platforms
         if platform not in ["uplay", "pc", "psn", "ps4", "xbl", "xbox"]:
             return None
-        with open("Lists/platformList.json") as file:
+        with open("Lists/platformList.json", "r") as file:
             platformList = json.loads(file)
         platform = platformList[platform]
         #Allow xbox usernames with spaces
@@ -101,7 +101,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     #Return K/D and W/L of specified operator
     def op(self, c, splitted):
-        with open("Lists/operatorList.json") as file:
+        with open("Lists/operatorList.json", "r") as file:
             operatorList = json.loads(file)
         opArg = self.opSearch(splitted[1])
         #If given operator doesn"t exist, return
@@ -144,7 +144,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(c, splitted)
         if results == None:
             return
-        with open("Lists/operatorList.json") as file:
+        with open("Lists/operatorList.json", "r") as file:
             operatorList = json.loads(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
@@ -172,7 +172,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(c, splitted)
         if results == None:
             return
-        with open("Lists/rankList.json") as file:
+        with open("Lists/rankList.json", "r") as file:
             rankList = json.loads(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
@@ -196,7 +196,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     #Returns players rank and mmr for specified season
     def season(self, c, splitted):
-        with open("Lists/seasonList.json") as file:
+        with open("Lists/seasonList.json", "r") as file:
             seasonList = json.loads(file)
         season, delTwo = self.seasonSearch(splitted[1], splitted[2], seasonList)
         if season == None:
@@ -208,7 +208,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(c, splitted)
         if results == None:
             return
-        with open("Lists/rankList.json") as file:
+        with open("Lists/rankList.json", "r") as file:
             rankList = json.loads(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
