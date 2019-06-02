@@ -33,7 +33,7 @@ Launch the bot either through IDLE, Python's IDE by opening the StatsBot.py and 
 
 Or double click on StatsBot.py
 
-**Or use Launcher shell script. Specify list of target channels aswell as if they want coloured text (True, False) then launch script
+**Or use Launcher shell script. Specify list of target channels aswell as if they want coloured text (True, False) then launch script**
 
 <hr>
 
