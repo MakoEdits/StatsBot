@@ -34,16 +34,16 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         splitted = info.arguments[0].split(" ")
         #Assigns currently set functions to keywords
         #Allowing them to be called by passing user input
-        functionList = {f"{botPrefix} statsbot":       (lambda: self.help(connection, splitted)),
-                        f"{botPrefix} {statsString}":  (lambda: self.stats(connection, splitted)),
-                        f"{botPrefix} {opString}":     (lambda: self.op(connection, splitted)),
-                        f"{botPrefix} {mainsString}":  (lambda: self.mains(connection, splitted)),
-                        f"{botPrefix} {seasonString}": (lambda: self.season(connection, splitted))}
+        functionList = {f"{botPrefix} statsbot":       self.help,
+                        f"{botPrefix} {statsString}":  self.stats,
+                        f"{botPrefix} {opString}":     self.op,
+                        f"{botPrefix} {mainsString}":  self.mains,
+                        f"{botPrefix} {seasonString}": self.season}
 
         command = splitted[0].lower()
         if command in [*functionList]:
-            functionList[command]()
-
+            function = functionList.get(command, lambda:None)
+            function(connection, splitted)
 
 
     #Returns list of commands in chat
@@ -264,9 +264,9 @@ seasonString = "season"
 textColoured = False
 
 #Fill values
-targetChannel = "makoedits"
-clientID = "ivckprk09lhjn7s201ub44ndnkkkh2"
-auth = "oauth:jit5ebo0fswv3dc0y8jwuyajq4uzx5"
+targetChannel = ""
+clientID = ""
+auth = ""
 
 bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
 bot.start()
