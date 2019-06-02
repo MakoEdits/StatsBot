@@ -276,6 +276,5 @@ try:
     bot.start()
 except Exception as e:
     print(str(e) + str(targetChannel))
-    file = open("errorLogs.txt", "a")
-    file.write(str(e) + str(targetChannel) + "\n")
-    file.close()
+    with open("errorLogs.txt", "a") as file:
+        file.write(f"{e} {targetChannel}\n")
