@@ -1,4 +1,4 @@
-import os, irc.bot, requests, json, re
+import os, irc.bot, requests, json, re, sys
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
     def __init__(self, username, client_id, auth, channel):
@@ -275,6 +275,6 @@ try:
     bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
     bot.start()
 except Exception as e:
-    print(str(e) + str(targetChannel))
+    print(f"{e} {targetChannel}\n")
     with open("errorLogs.txt", "a") as file:
         file.write(f"{e} {targetChannel}\n")
