@@ -24,10 +24,15 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     #Sanitize inputs, allows bot prefix
     def on_pubmsg(self, c, e):
-        if re.sub("[a-zA-Z0-9-_. ]", "", e.arguments[0][len(botPrefix):]) != "":
+        msg = e.arguments[0]
+        prefixLen = len(botPrefix)
+        #Check for prefix
+        if msg[:prefixLen] != botPrefix:
             return
-        #Split input into list of words
-        splitted = e.arguments[0].split(" ")
+        #Sanitise
+        if re.sub("[a-zA-Z0-9-_. ]", "", msg[prefixLen:]) != "":
+            return
+        splitted = msg.split(" ")
         #Assigns currently set functions to keywords
         #Allowing them to be called by passing user input
         functionList = {botPrefix + "statsbot":   (lambda: self.help(c, splitted)),
@@ -35,8 +40,9 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
                         botPrefix + opString:     (lambda: self.op(c, splitted)),
                         botPrefix + mainsString:  (lambda: self.mains(c, splitted)),
                         botPrefix + seasonString: (lambda: self.season(c, splitted))}
-        if splitted[0].lower() in [*functionList]:
-            functionList[splitted[0].lower()]()
+        command = splitted[0].lower()
+        if command in [*functionList]:
+            functionList[command]()
 
     #Returns list of commands in chat
     def help(self, c, splitted):
