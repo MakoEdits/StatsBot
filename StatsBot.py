@@ -29,11 +29,11 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
         #Assigns currently set functions to keywords
         #Allowing them to be called by passing user input
-        functionList = {botPrefix + "statsbot":   (lambda: self.help(c, splitted)),
-                        botPrefix + statsString:  (lambda: self.stats(c, splitted)),
-                        botPrefix + opString:     (lambda: self.op(c, splitted)),
-                        botPrefix + mainsString:  (lambda: self.mains(c, splitted)),
-                        botPrefix + seasonString: (lambda: self.season(c, splitted))}
+        functionList = {f"{botPrefix} statsbot":       (lambda: self.help(c, splitted)),
+                        f"{botPrefix} {statsString}":  (lambda: self.stats(c, splitted)),
+                        f"{botPrefix} {opString}":     (lambda: self.op(c, splitted)),
+                        f"{botPrefix} {mainsString}":  (lambda: self.mains(c, splitted)),
+                        f"{botPrefix} {seasonString}": (lambda: self.season(c, splitted))}
         userCommand = splitted[0].lower()
         if userCommand in [*functionList]:
             functionList[userCommand]()
