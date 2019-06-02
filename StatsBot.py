@@ -13,35 +13,41 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         print(f"Connecting to {server} on port {port}")
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port, auth)], username, username)
 
-    def on_welcome(self, c, e):
+    def on_welcome(self, connection, info):
         print("Stats Bot active in " + str(self.channel))
-        c.cap("REQ", ":twitch.tv/membership")
-        c.cap("REQ", ":twitch.tv/tags")
-        c.cap("REQ", ":twitch.tv/commands")
-        c.join(self.channel)
+        connection.cap("REQ", ":twitch.tv/membership")
+        connection.cap("REQ", ":twitch.tv/tags")
+        connection.cap("REQ", ":twitch.tv/commands")
+        connection.join(self.channel)
 
     #Sanitize inputs, allows bot prefix
-    def on_pubmsg(self, c, e):
-        if re.sub("[a-zA-Z0-9-_. ]", "", e.arguments[0][len(botPrefix):]) != "":
+    def on_pubmsg(self, connection, info):
+        msg = info.arguments[0]
+        prefixLen = len(botPrefix)
+        #Check for prefix
+        if msg[:prefixLen] != botPrefix:
+            return
+        #Sanitise
+        if re.sub("[a-zA-Z0-9-_. ]", "", msg[prefixLen:]) != "":
             return
         #Split input into list of words
-        splitted = e.arguments[0].split(" ")
-
+        splitted = info.arguments[0].split(" ")
         #Assigns currently set functions to keywords
         #Allowing them to be called by passing user input
-        functionList = {f"{botPrefix} statsbot":       (lambda: self.help(c, splitted)),
-                        f"{botPrefix} {statsString}":  (lambda: self.stats(c, splitted)),
-                        f"{botPrefix} {opString}":     (lambda: self.op(c, splitted)),
-                        f"{botPrefix} {mainsString}":  (lambda: self.mains(c, splitted)),
-                        f"{botPrefix} {seasonString}": (lambda: self.season(c, splitted))}
-        userCommand = splitted[0].lower()
-        if userCommand in [*functionList]:
-            functionList[userCommand]()
+        functionList = {f"{botPrefix} statsbot":       (lambda: self.help(connection, splitted)),
+                        f"{botPrefix} {statsString}":  (lambda: self.stats(connection, splitted)),
+                        f"{botPrefix} {opString}":     (lambda: self.op(connection, splitted)),
+                        f"{botPrefix} {mainsString}":  (lambda: self.mains(connection, splitted)),
+                        f"{botPrefix} {seasonString}": (lambda: self.season(connection, splitted))}
+
+        command = splitted[0].lower()
+        if command in [*functionList]:
+            functionList[command]()
 
 
 
     #Returns list of commands in chat
-    def help(self, c, splitted):
+    def help(self, connection, splitted):
         #/me command
         outMessage = "/me" if textColoured else ""
         outMessage += ("Current StatsBot commands are: " + 
@@ -50,12 +56,12 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         "!mains [p] [t] # " + 
         "!season [s] [p] [t] # " +
         "p: platform, t: target player, o: operator, s: season")
-        c.privmsg(self.channel, outMessage)
+        connection.privmsg(self.channel, outMessage)
 
 
 
     #Test input values and return short results, long results and message format
-    def search(self, c, splitted):
+    def search(self, connection, splitted):
         try:
             platform = splitted[1].lower()
         except IndexError:
@@ -94,13 +100,13 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         else:
             #User feedback
             outMessage += "Player does not exist"
-            c.privmsg(self.channel, outMessage)
+            connection.privmsg(self.channel, outMessage)
             return None
 
 
 
     #Return K/D and W/L of specified operator
-    def op(self, c, splitted):
+    def op(self, connection, splitted):
         with open("Lists/operatorList.json", "r") as file:
             operatorList = json.loads(file)
         opArg = self.opSearch(splitted[1])
@@ -109,7 +115,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             return
         #Remove the operator from the argument to work with search function
         del splitted[1]
-        results = self.search(c, splitted)
+        results = self.search(connection, splitted)
         if results == None:
             return
 
@@ -126,7 +132,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Format response
         outMessage += f"{player_name} | {player_operator} | K/D: {player_opKD} | W/L: {player_opWL}"
         #Send message to target channel
-        c.privmsg(self.channel, outMessage)
+        connection.privmsg(self.channel, outMessage)
 
 
     #Search through list of operators then return relevant key
@@ -139,9 +145,9 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
 
     #Returns operators by highest playtime and their K/D
-    def mains(self, c, splitted):
+    def mains(self, connection, splitted):
         #Get request
-        results = self.search(c, splitted)
+        results = self.search(connection, splitted)
         if results == None:
             return
         with open("Lists/operatorList.json", "r") as file:
@@ -162,14 +168,14 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Format response
         outMessage += f"{player_name} | Attack main: {player_a} K/D: {player_aKD} | Defend main: {player_d} K/D: {player_dKD}"
         #Send message to target channel
-        c.privmsg(self.channel, outMessage) 
+        connection.privmsg(self.channel, outMessage) 
 
 
 
     #Returns players current season rank and overalls stats
-    def stats(self, c, splitted):
+    def stats(self, connection, splitted):
         #Get request
-        results = self.search(c, splitted)
+        results = self.search(connection, splitted)
         if results == None:
             return
         with open("Lists/rankList.json", "r") as file:
@@ -190,12 +196,12 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Format response
         outMessage += f"{player_name} | K/D: {player_kd} | W/L: {player_wl} | MMR: {player_currentmmr} | Rank: {player_currentrank} | Level: {player_level}"
         #Send message to target channel
-        c.privmsg(self.channel, outMessage)
+        connection.privmsg(self.channel, outMessage)
 
 
 
     #Returns players rank and mmr for specified season
-    def season(self, c, splitted):
+    def season(self, connection, splitted):
         with open("Lists/seasonList.json", "r") as file:
             seasonList = json.loads(file)
         season, delTwo = self.seasonSearch(splitted[1], splitted[2], seasonList)
@@ -205,7 +211,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         if delTwo:
             del splitted[2]
         del splitted[1]
-        results = self.search(c, splitted)
+        results = self.search(connection, splitted)
         if results == None:
             return
         with open("Lists/rankList.json", "r") as file:
@@ -226,7 +232,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Format response
         outMessage += f"{player_name} | {seasonName} ( {season} ) | MMR: {player_s_mmr} | Rank: {player_s_rank}"
         #Send message to target channel
-        c.privmsg(self.channel, outMessage)
+        connection.privmsg(self.channel, outMessage)
 
 
     #Test if the user passed a number or season name then return season number
@@ -258,9 +264,9 @@ seasonString = "season"
 textColoured = False
 
 #Fill values
-targetChannel = ""
-clientID = ""
-auth = ""
+targetChannel = "makoedits"
+clientID = "ivckprk09lhjn7s201ub44ndnkkkh2"
+auth = "oauth:jit5ebo0fswv3dc0y8jwuyajq4uzx5"
 
 bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
 bot.start()
