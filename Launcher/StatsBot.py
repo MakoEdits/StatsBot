@@ -41,7 +41,6 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
                         f"{botPrefix}{seasonString}": self.season}
 
         command = splitted[0].lower()
-        print(command)
         if command in [*functionList]:
             function = functionList.get(command, lambda:None)
             function(connection, splitted)
