@@ -3,6 +3,8 @@ Twitch chat bot which returns Rainbow Six player stats
 
 If you would like me to host the bot under my own bot contact me @ Twitter.com/Mako_Edits
 
+TODO: Wrapper for custom commands per channel + advanced async framework
+
 <hr>
 
 ## Requires
