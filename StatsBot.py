@@ -1,16 +1,15 @@
-import os, irc.bot, requests, json, re
+import os, irc.bot, requests, json, re, sys
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
     def __init__(self, username, client_id, auth, channel):
         self.client_id = client_id
-        self.channel = "#" + channel
+        self.channel = f"#{channel}"
         headers = {"Client-ID": client_id, "Accept": "application/vnd.twitchtv.v5+json"}
-        url = "https://api.twitch.tv/kraken/users?login=" + channel
+        url = f"https://api.twitch.tv/kraken/users?login={channel}"
         r = requests.get(url, headers=headers).json()
         self.channel_id = r["users"][0]["_id"]
         server = "irc.chat.twitch.tv"
         port = 6667
-        print(f"Connecting to {server} on port {port}")
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port, auth)], username, username)
 
     def on_welcome(self, connection, info):
@@ -34,12 +33,11 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         splitted = info.arguments[0].split(" ")
         #Assigns currently set functions to keywords
         #Allowing them to be called by passing user input
-        functionList = {f"{botPrefix} statsbot":       self.help,
-                        f"{botPrefix} {statsString}":  self.stats,
-                        f"{botPrefix} {opString}":     self.op,
-                        f"{botPrefix} {mainsString}":  self.mains,
-                        f"{botPrefix} {seasonString}": self.season}
-
+        functionList = {f"{botPrefix}statsbot":       self.help,
+                        f"{botPrefix}{statsString}":  self.stats,
+                        f"{botPrefix}{opString}":     self.op,
+                        f"{botPrefix}{mainsString}":  self.mains,
+                        f"{botPrefix}{seasonString}": self.season}
         command = splitted[0].lower()
         if command in [*functionList]:
             function = functionList.get(command, lambda:None)
@@ -49,7 +47,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
     #Returns list of commands in chat
     def help(self, connection, splitted):
         #/me command
-        outMessage = "/me" if textColoured else ""
+        outMessage = "/me " if textColoured else ""
         outMessage += ("Current StatsBot commands are: " + 
         "!stats [p] [t] # " +
         "!op [o] [p] [t] # " +
@@ -57,7 +55,6 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         "!season [s] [p] [t] # " +
         "p: platform, t: target player, o: operator, s: season")
         connection.privmsg(self.channel, outMessage)
-
 
 
     #Test input values and return short results, long results and message format
@@ -75,8 +72,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         #Allow users to use more common names for platforms
         if platform not in ["uplay", "pc", "psn", "ps4", "xbl", "xbox"]:
             return None
-        with open("Lists/platformList.json", "r") as file:
-            platformList = json.loads(file)
+        with open("Lists/platformList.json") as file:
+            platformList = json.load(file)
         platform = platformList[platform]
         #Allow xbox usernames with spaces
         if platform == "xbl" and len(splitted) > 3:
@@ -87,7 +84,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         searchR = requests.get(searchUrl).json()
 
         #/me command
-        outMessage = "/me" if textColoured else ""
+        outMessage = "/me " if textColoured else ""
         #If player doesnt exist return else return info
         if searchR["totalresults"] > 0:
             player_id = searchR["results"][0]["p_id"]
@@ -107,8 +104,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     #Return K/D and W/L of specified operator
     def op(self, connection, splitted):
-        with open("Lists/operatorList.json", "r") as file:
-            operatorList = json.loads(file)
+        with open("Lists/operatorList.json") as file:
+            operatorList = json.load(file)
         opArg = self.opSearch(splitted[1])
         #If given operator doesn"t exist, return
         if opArg == None:
@@ -120,7 +117,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             return
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
-        operators = json.loads(lResults["operators"])
+        operators = json.load(lResults["operators"])
         win = operators[0][opArg]
         loss = operators[1][opArg]
 
@@ -150,14 +147,14 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(connection, splitted)
         if results == None:
             return
-        with open("Lists/operatorList.json", "r") as file:
-            operatorList = json.loads(file)
+        with open("Lists/operatorList.json") as file:
+            operatorList = json.load(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Retrieve top attacker and defender
         aTop = lResults["favattacker"]
         dTop = lResults["favdefender"]
-        operators = json.loads(lResults["operators"])
+        operators = json.load(lResults["operators"])
 
         #Format results
         player_name = sResults["p_name"]
@@ -178,8 +175,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(connection, splitted)
         if results == None:
             return
-        with open("Lists/rankList.json", "r") as file:
-            rankList = json.loads(file)
+        with open("Lists/rankList.json") as file:
+            rankList = json.load(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Win/Loss retrieval
@@ -202,8 +199,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
     #Returns players rank and mmr for specified season
     def season(self, connection, splitted):
-        with open("Lists/seasonList.json", "r") as file:
-            seasonList = json.loads(file)
+        with open("Lists/seasonList.json") as file:
+            seasonList = json.load(file)
         season, delTwo = self.seasonSearch(splitted[1], splitted[2], seasonList)
         if season == None:
             return
@@ -214,8 +211,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         results = self.search(connection, splitted)
         if results == None:
             return
-        with open("Lists/rankList.json", "r") as file:
-            rankList = json.loads(file)
+        with open("Lists/rankList.json") as file:
+            rankList = json.load(file)
 
         sResults, lResults, outMessage = results[0], results[1], results[2]
         #Retrieve MMR and Rank
@@ -245,10 +242,12 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
                 return None, None
         except ValueError:
             #Accounts for season names that are multiple words
-            if season.lower() in seasonList:
-                return seasonList.index(str(season)), False
-            elif (season.lower() + " " + seasonPlus.lower()) in seasonList:
-                return seasonList.index(str(season + " " + seasonPlus)), True
+            sName1 = season.lower()
+            sName2 = seasonPlus.lower()
+            if sName1 in seasonList:
+                return seasonList.index(f"{sName1}"), False
+            elif f"{sName1} {sName2}" in seasonList:
+                return seasonList.index(f"{sName1} {sName2}"), True
             else:
                 return None, None
 
@@ -260,13 +259,19 @@ statsString = "stats"
 mainsString = "mains"
 opString = "op"
 seasonString = "season"
+
 #If bot uses /me or not
-textColoured = False
+textColoured = True
 
 #Fill values
 targetChannel = ""
 clientID = ""
 auth = ""
 
-bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
-bot.start()
+try:
+    bot = TwitchBot(str(targetChannel), str(clientID), str(auth), str(targetChannel))
+    bot.start()
+except Exception as e:
+    print(f"{e} {targetChannel}\n")
+    with open("errorLogs.txt", "a") as file:
+        file.write(f"{e} {targetChannel}\n")

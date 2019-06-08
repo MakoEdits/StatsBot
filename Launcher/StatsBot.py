@@ -5,12 +5,11 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         self.client_id = client_id
         self.channel = f"#{channel}"
         headers = {"Client-ID": client_id, "Accept": "application/vnd.twitchtv.v5+json"}
-        url = "https://api.twitch.tv/kraken/users?login=" + channel
+        url = f"https://api.twitch.tv/kraken/users?login={channel}"
         r = requests.get(url, headers=headers).json()
         self.channel_id = r["users"][0]["_id"]
         server = "irc.chat.twitch.tv"
         port = 6667
-        print(f"Connecting to {server} on port {port}")
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port, auth)], username, username)
 
     def on_welcome(self, connection, info):
@@ -39,7 +38,6 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
                         f"{botPrefix}{opString}":     self.op,
                         f"{botPrefix}{mainsString}":  self.mains,
                         f"{botPrefix}{seasonString}": self.season}
-
         command = splitted[0].lower()
         if command in [*functionList]:
             function = functionList.get(command, lambda:None)
@@ -49,7 +47,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
     #Returns list of commands in chat
     def help(self, connection, splitted):
         #/me command
-        outMessage = "/me" if textColoured else ""
+        outMessage = "/me " if textColoured else ""
         outMessage += ("Current StatsBot commands are: " + 
         "!stats [p] [t] # " +
         "!op [o] [p] [t] # " +
@@ -57,7 +55,6 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         "!season [s] [p] [t] # " +
         "p: platform, t: target player, o: operator, s: season")
         connection.privmsg(self.channel, outMessage)
-
 
 
     #Test input values and return short results, long results and message format
@@ -87,7 +84,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         searchR = requests.get(searchUrl).json()
 
         #/me command
-        outMessage = "/me" if textColoured else ""
+        outMessage = "/me " if textColoured else ""
         #If player doesnt exist return else return info
         if searchR["totalresults"] > 0:
             player_id = searchR["results"][0]["p_id"]
