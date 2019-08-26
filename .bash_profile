@@ -1,0 +1,1 @@
+export PATH=$PATH:D:/Documents/Python/bin
