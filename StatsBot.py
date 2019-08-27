@@ -292,7 +292,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 			+ f" | {season__name} ( {season} )"
 			+ " | MMR: " + player_s_mmr
 			+ " | Rank: " + player_s_rank
-			
+
 		#Send message to target channel
 		connection.privmsg(self.channel, out_message)
 
@@ -334,7 +334,13 @@ client_id = ""
 auth = ""
 
 try:
-	bot = TwitchBot(str(target_channel), str(client_id), str(auth), str(target_channel))
+	bot = TwitchBot(
+		str(target_channel),
+		str(client_id),
+		str(auth),
+		str(target_channel)
+	)
+	
 	bot.start()
 except Exception as e:
 	print(f"{e} {target_channel}\n")
