@@ -1,43 +1,7 @@
 ## StatsBot
 Twitch chat bot which returns Rainbow Six player stats
 
-If you would like me to host the bot under my own bot contact me @ Twitter.com/Mako_Edits
-
-TODO: Wrapper for custom commands per channel + advanced async framework
-
-<hr>
-
-## Requires
-
-Python 3.6 not 3.7 or 2.x  https://www.python.org/downloads/release/python-367/
-
-Python packages: IRC and Requests
-
-<i> In CMD type "py -m pip install irc" or "python -m pip install irc" same for requests </i>
-
-<hr>
-
-In the file:
-
-**Fill targetChannel with your channel name**
-
-**Fill clientID with the client ID you retrieve by registering a new application at https://dev.twitch.tv/console**
-
-<i>(copy settings shown if you are unfamiliar)</i>
-
-**Fill auth with auth string you get from https://twitchapps.com/tmi/ (include "oauth:" in string)**
-
-![ClientID](https://i.imgur.com/k368tq7.png)
-
-<hr>
-
-Launch the bot either through IDLE, Python's IDE by opening the StatsBot.py and pressing F5
-
-Or double click on StatsBot.py
-
-**Or use Launcher shell script. Specify list of target channels aswell as if they want coloured text (True, False) then launch script**
-
-<hr>
+TODO: setup.py
 
 ## Usage
 Current commands:
