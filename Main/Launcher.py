@@ -10,14 +10,17 @@ import StatsBot
 
 def main():
 	print("Accessing database")
+	# Get path above (2 steps for security reasons)
 	path = os.path.abspath(os.path.join("..", os.pardir))
 	with open(path+"\\MongoPath.txt", "r") as mongo_path:
 		client = pymongo.MongoClient(mongo_path.read())
 	db = client.Main
+	# Fetch and format relevant collections
 	config = get_config(db)
 	bot_list = get_bots(db)
 	channel_list = get_channels(db)
 
+	# Links channels to respective bots
 	bot_directory = {}
 	for bot in bot_list:
 		bot_directory[bot_list[bot]["name"]] = []
@@ -27,6 +30,7 @@ def main():
 
 	print("Launching bots")
 
+	# Launches new bot to threads
 	for bot in bot_directory:
 		channels = bot_directory[bot]
 		for channel in channels:
@@ -51,7 +55,7 @@ def get_bots(db):
 	bot_list = {}
 	db_list = bots.find()
 	bot_count = bots.count_documents({})
-
+	# [{"bot_name": bot}]
 	for x in range(bot_count):
 		bot_list[db_list[x]["name"]] = db_list[x]
 
@@ -64,7 +68,7 @@ def get_channels(db):
 	channel_list = {}
 	db_list = channels.find({"channel": {"$ne": "default"}})
 	channel_count  = channels.count_documents({"channel": {"$ne": "default"}})
-
+	# [{"channel_name": channel}]
 	for x in range(channel_count):
 		channel_list[db_list[x]["channel"]] = db_list[x]
 
@@ -77,6 +81,7 @@ def get_config(db):
 	old_operator_list = config.find({"name": "operator_list"})[0]
 	cleanup(old_operator_list)
 	operator_list = {}
+	# Replaces - sign because database cannot store :
 	for key in old_operator_list:
 		operator_list[key.replace("-",":")] = old_operator_list[key]
 

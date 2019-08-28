@@ -1,7 +1,19 @@
 ## StatsBot
 Twitch chat bot which returns Rainbow Six player stats
 
-TODO: setup.py
+TODO: setup.py, runtime database updates, channel settings change, error checks
+
+## Installation
+Run setup.py to install relevant packages (todo)
+
+Link database (mongodb) to bot launcher using python 3.6 or later connection string
+
+[Database format](https://github.com/MakoEdits/StatsBot/Examples/Database.png)
+
+Or launch single StatsBot.py instance passing relevant args:
+
+[Args format](https://github.com/MakoEdits/StatsBot/Examples/Args.png)
+
 
 ## Usage
 Current commands:

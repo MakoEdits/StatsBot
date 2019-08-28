@@ -46,7 +46,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
 
 	def on_welcome(self, connection, info):
-		print("Stats Bot active in " + str(self.channel_name))
+		print(f"Stats Bot active in {self.channel_name}")
 
 		connection.cap("REQ", ":twitch.tv/membership")
 		connection.cap("REQ", ":twitch.tv/tags")
