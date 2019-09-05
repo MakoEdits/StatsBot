@@ -1,0 +1,25 @@
+{
+	"_id":
+		{
+			"$oid": "5d6625de1c9d440000c5a026"
+		},
+	"name": "season_list",
+	"seasons":
+		[
+			"launch",
+			"black ice",
+			"dust line",
+			"skull rain",
+			"red crow",
+			"velvet shell",
+			"health",
+			"blood orchid",
+			"white noise",
+			"chimera",
+			"para bellum",
+			"grim sky",
+			"wind bastion",
+			"burnt horizon",
+			"phantom sight"
+		]
+}

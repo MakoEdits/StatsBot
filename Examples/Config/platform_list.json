@@ -1,0 +1,13 @@
+{
+	"_id":
+		{
+			"$oid": "id"
+		},
+	"name": "platform_list",
+	"uplay": "uplay",
+	"pc": "uplay",
+	"psn": "psn",
+	"ps4": "psn",
+	"xbl": "xbl",
+	"xbox": "xbl"
+}

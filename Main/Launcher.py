@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
-import pymongo
+# Launcher module
+# Launches instances of bots from given database
+
 from threading import Thread
+import pymongo
 import pathlib
 import os
 
@@ -10,7 +13,7 @@ import StatsBot
 
 def main():
 	print("Accessing database")
-	# Get path above (2 steps for security reasons)
+	# Get directory 2 above (2 directories for security reasons)
 	path = os.path.abspath(os.path.join("..", os.pardir))
 	with open(path+"\\MongoPath.txt", "r") as mongo_path:
 		client = pymongo.MongoClient(mongo_path.read())
@@ -48,7 +51,10 @@ def main():
 			new_thread = Thread(target=lambda: new_bot.start())
 			new_thread.start()
 
+	print("Finished launching")
 
+
+# Get bots from bot database
 def get_bots(db):
 	bots = db.Bots
 
@@ -62,6 +68,7 @@ def get_bots(db):
 	return bot_list
 
 
+# Gets channels from channel database
 def get_channels(db):
 	channels = db.Channels
 
@@ -75,6 +82,7 @@ def get_channels(db):
 	return channel_list
 
 
+# Gets config from config database
 def get_config(db):
 	config = db.Config
 
@@ -85,7 +93,7 @@ def get_config(db):
 	for key in old_operator_list:
 		operator_list[key.replace("-",":")] = old_operator_list[key]
 
-	season_list = config.find({"name":"season_list"})[0]["seasons"]
+	season_list = config.find({"name": "season_list"})[0]["seasons"]
 	rank_list = config.find({"name": "rank_list"})[0]["ranks"]
 	platform_list = config.find({"name": "platform_list"})[0]
 	cleanup(platform_list)
@@ -93,6 +101,7 @@ def get_config(db):
 	return operator_list, season_list, rank_list, platform_list
 
 
+# Removes id and name from list to use dictionary
 def cleanup(input_list):
 	cleanup_list = ["_id", "name"]
 	for key in cleanup_list:

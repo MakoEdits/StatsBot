@@ -1,0 +1,18 @@
+{
+	"_id":
+		{
+			"$oid": "id"
+		},
+	"channel": "default",
+	"bot_prefix": "!",
+	"stats_string": "stats",
+	"mains_string": "mains",
+	"op_string": "op",
+	"season_string": "season",
+	"text_coloured": true,
+	"clearance":
+		[
+			"owner"
+		],
+	"bot": ""
+}
