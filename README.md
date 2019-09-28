@@ -7,11 +7,9 @@
 
 ## Installation
 
-### Run setup.py to install relevant packages (TODO) using Python 3.7
-
 ### *Requires pymongo, irc, requests*
 
-#### Link database (mongodb) to bot launcher using python 3.6 or later connection string
+#### Link database (mongodb) to bot launcher using "Python 3.6 or later" connection string
 
 #### Name the database as Main
 
@@ -75,7 +73,7 @@ Resets command strings to default
 
 #### !statsbot_resync
 
-Synchronizes the bot to the database, should you edit the values in the database
+Synchronizes the bot to the database, should you edit the values in the database during runtime
 
 #### !statsbot_clearance [add or remove] [username]
 
