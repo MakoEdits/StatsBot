@@ -1,7 +1,7 @@
 ## StatsBot
 ### Twitch chat bot which returns Rainbow Six player stats
 
-### TODO: setup.py
+### TODO: requirements.txt, local mongodb, database initialiser, comprehensive breakpoints
 
 <hr>
 

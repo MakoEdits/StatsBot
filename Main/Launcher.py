@@ -7,8 +7,9 @@ from threading import Thread
 import pymongo
 import pathlib
 import os
+import sys
 
-import StatsBot
+from StatsBot import TwitchBot
 
 
 def main():
@@ -40,7 +41,7 @@ def main():
 			current_channel = channel_list[channel]
 			current_bot = bot_list[bot]
 
-			new_bot = StatsBot.TwitchBot(
+			new_bot = TwitchBot(
 				str(current_bot["name"]),
 				str(current_bot["client_id"]),
 				str(current_bot["auth"]),
@@ -74,7 +75,7 @@ def get_channels(db):
 
 	channel_list = {}
 	db_list = channels.find({"channel": {"$ne": "default"}})
-	channel_count  = channels.count_documents({"channel": {"$ne": "default"}})
+	channel_count = channels.count_documents({"channel": {"$ne": "default"}})
 	# [{"channel_name": channel}]
 	for x in range(channel_count):
 		channel_list[db_list[x]["channel"]] = db_list[x]
@@ -85,13 +86,12 @@ def get_channels(db):
 # Gets config from config database
 def get_config(db):
 	config = db.Config
-
 	old_operator_list = config.find({"name": "operator_list"})[0]
 	cleanup(old_operator_list)
 	operator_list = {}
 	# Replaces - sign because database cannot store :
 	for key in old_operator_list:
-		operator_list[key.replace("-",":")] = old_operator_list[key]
+		operator_list[key.replace("-", ":")] = old_operator_list[key]
 
 	season_list = config.find({"name": "season_list"})[0]["seasons"]
 	rank_list = config.find({"name": "rank_list"})[0]["ranks"]
